@@ -1,45 +1,39 @@
 import axios from "axios";
 import { API_BASE_URLS } from "../../constants";
+import { ArticleFilters } from "../../types";
 
-// Define API keys (securely stored in `.env` file)
 const API_KEYS: Record<string, string> = {
   newsapi: import.meta.env.VITE_NEWSAPI_KEY,
-  opennews: import.meta.env.VITE_OPENNEWS_KEY,
-  newscred: import.meta.env.VITE_NEWSCRED_KEY,
   guardian: import.meta.env.VITE_GUARDIAN_KEY,
   newyorktimes: import.meta.env.VITE_NEWYORKTIMES_KEY,
 };
 
-// Create an Axios instance
 const apiClient = axios.create({
-  timeout: 10000, // Set timeout for requests
-  headers: {
-    "Content-Type": "application/json",
-  },
+  timeout: 10000,
+  headers: { "Content-Type": "application/json" },
 });
 
-// Reusable function to fetch articles from any source
 export const fetchArticles = async (
   source: "newsapi" | "guardian" | "newyorktimes",
-  filters: { category?: string; author?: string; query?: string }
+  filters: ArticleFilters
 ) => {
   try {
     const baseUrl = API_BASE_URLS[source];
     const apiKey = API_KEYS[source];
-
-    if (!baseUrl || !apiKey) {
-      throw new Error(`Invalid source: ${source}`);
-    }
+    if (!baseUrl || !apiKey) throw new Error(`Invalid source: ${source}`);
 
     let endpoint = "";
-    let params: Record<string, string> = {};
+    let params: Record<string, string | number> = {
+      page: filters.page!,
+      pageSize: filters.pageSize!,
+    };
 
-    // Configure API calls based on the source
     switch (source) {
       case "newsapi":
         endpoint = "/everything";
         params = {
-          apiKey, // ✅ NewsAPI uses `apiKey`
+          ...params,
+          apiKey,
           q: filters.query || "",
           category: filters.category || "",
           author: filters.author || "",
@@ -48,29 +42,21 @@ export const fetchArticles = async (
 
       case "guardian":
         endpoint = "/search";
-
         params = {
-          q: filters.query ? filters.query.replace(/\s+/g, ",") : "", // Format query
-          "api-key": apiKey, // The Guardian uses `api-key`
+          ...params,
+          "api-key": apiKey,
+          q: filters.query ? filters.query.replace(/\s+/g, ",") : "",
         };
-
-        if (filters.category) {
-          params.section = filters.category; // Add section only if it exists
-        }
-
-        // Remove undefined values to avoid sending empty parameters
-        Object.keys(params).forEach(
-          (key) => params[key] === undefined && delete params[key]
-        );
-
+        if (filters.category) params.section = filters.category;
         break;
 
       case "newyorktimes":
         endpoint = "/search/v2/articlesearch.json";
         params = {
+          ...params,
+          "api-key": apiKey,
           q: filters.query || "",
           fq: filters.category ? `news_desk:("${filters.category}")` : "",
-          "api-key": apiKey, // ✅ NYT uses `api-key`
         };
         break;
 
