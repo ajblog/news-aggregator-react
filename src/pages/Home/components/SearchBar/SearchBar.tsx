@@ -16,7 +16,7 @@ import {
   getAllCategories,
 } from "../../../../types";
 import { motion } from "framer-motion";
-import { Search, CalendarDays } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function SearchBar() {
   const categories = getAllCategories();
@@ -51,10 +51,10 @@ export default function SearchBar() {
                 dispatch({ type: "SET_QUERY", payload: e.target.value })
               }
               placeholder="Search for news..."
-              className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-lg rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-indigo-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md"
+              className="w-full pl-10 pr-4 py-2 sm:py-3 "
             />
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 sm:w-5 h-4 sm:h-5"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-900 w-4 sm:w-5 h-4 sm:h-5"
               aria-hidden="true"
             />
           </div>
@@ -76,7 +76,7 @@ export default function SearchBar() {
           >
             <SelectTrigger
               id="category"
-              className="w-full px-4 py-2 sm:py-3 text-sm sm:text-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg sm:rounded-xl shadow-md hover:ring-2 hover:ring-blue-300 dark:hover:ring-indigo-500 transition-all"
+              className="w-full px-4 py-2 sm:py-3 text-sm sm:text-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-500 text-gray-900 dark:text-white rounded-lg sm:rounded-xl shadow-md hover:ring-2 hover:ring-blue-300 dark:hover:ring-indigo-500 transition-all"
             >
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
@@ -112,10 +112,10 @@ export default function SearchBar() {
                   ? "Search by author isn't availble"
                   : "Search by author..."
               }
-              className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-lg rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-indigo-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md"
+              className="w-full pl-10 pr-4 py-2 sm:py-3 "
             />
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 sm:w-5 h-4 sm:h-5"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-900 w-4 sm:w-5 h-4 sm:h-5"
               aria-hidden="true"
             />
           </div>
@@ -137,11 +137,7 @@ export default function SearchBar() {
               onChange={(e) =>
                 dispatch({ type: "SET_FROM_DATE", payload: e.target.value })
               }
-              className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-lg rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-indigo-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md"
-            />
-            <CalendarDays
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 sm:w-5 h-4 sm:h-5"
-              aria-hidden="true"
+              className="block w-full pr-4 py-2 sm:py-3 "
             />
           </div>
         </div>
@@ -162,7 +158,7 @@ export default function SearchBar() {
           >
             <SelectTrigger
               id="source"
-              className="w-full px-4 py-2 sm:py-3 text-sm sm:text-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg sm:rounded-xl shadow-md hover:ring-2 hover:ring-blue-300 dark:hover:ring-indigo-500 transition-all"
+              className="w-full px-4 py-2 sm:py-3 text-sm sm:text-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-500 text-gray-900 dark:text-white rounded-lg sm:rounded-xl shadow-md hover:ring-2 hover:ring-blue-300 dark:hover:ring-indigo-500 transition-all"
             >
               <SelectValue placeholder="Select Source" />
             </SelectTrigger>

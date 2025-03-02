@@ -89,23 +89,28 @@ export const fetchArticles = async (
       case "newyorktimes":
         endpoint = "/search/v2/articlesearch.json";
         params["api-key"] = apiKey;
-        params.fq = "";
 
         if (filters.query) {
-          params.fq += `news_desk:("${filters.query}")`;
           params.q = filters.query;
         }
 
+        // Initialize fq only if we have filters
+        let fq = "";
+
         if (filters.author) {
-          params.fq += params.fq
-            ? ` AND byline:("${filters.author}")`
-            : `byline:("${filters.author}")`;
+          fq += `byline:("${filters.author}")`;
         }
 
         if (filters.category && filters.category !== CategoryEnum.ALL) {
-          params.fq += params.fq
-            ? ` AND section_name:(${filters.category})`
-            : `section_name:(${filters.category})`;
+          if (fq) {
+            fq += ` AND `;
+          }
+          fq += `section_name:(${filters.category})`;
+        }
+
+        // Only add fq to params if it's not empty
+        if (fq) {
+          params.fq = fq;
         }
 
         // Add pagination
