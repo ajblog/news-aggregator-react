@@ -1,3 +1,3 @@
 export * from "./wrappers";
-export * from "./UI";
+export * from "./ui";
 export * from "./widgets";
