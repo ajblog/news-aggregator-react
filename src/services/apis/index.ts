@@ -41,12 +41,25 @@ export const fetchArticles = async (
       case "newsapi":
         endpoint = "/everything";
         params.apiKey = apiKey;
+
+        // Set up base query
         params.q = filters.query || "news";
 
-        if (filters.category && filters.category !== CategoryEnum.ALL)
-          params.categories = filters.category;
-        if (filters.author) params.authors = filters.author;
-        if (filters.fromDate) params.from = filters.fromDate;
+        // Handle dates
+        if (filters.fromDate) {
+          params.from = filters.fromDate; // Format must be YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
+        }
+
+        // Handle authors
+        if (filters.author) {
+          params.q += ` AND author:${filters.author}`; // Add author filter to main query
+        }
+
+        // Handle categories
+        if (filters.category && filters.category !== CategoryEnum.ALL) {
+          params.q += ` AND ${filters.category}`; // Add category filter to main query
+        }
+
         break;
 
       case "guardian":
@@ -54,24 +67,54 @@ export const fetchArticles = async (
         params["api-key"] = apiKey;
         params.pageSize = PAGE_SIZE;
 
-        if (filters.category && filters.category !== CategoryEnum.ALL)
+        // Handle date filtering
+        if (filters.fromDate) {
+          params["from-date"] = filters.fromDate; // Changed from 'fromDate' to 'from-date'
+          // Guardian API expects date in YYYY-MM-DD format
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(filters.fromDate)) {
+            throw new Error("Guardian API date must be in YYYY-MM-DD format");
+          }
+        }
+
+        // Handle category filtering
+        if (
+          filters.category &&
+          filters.category !== CategoryEnum.ALL &&
+          !filters.author
+        ) {
           params.section = filters.category;
-        if (filters.author) params.contributor = filters.author;
-        if (filters.fromDate) params.fromDate = filters.fromDate;
+        }
         break;
 
       case "newyorktimes":
         endpoint = "/search/v2/articlesearch.json";
         params["api-key"] = apiKey;
-        params.fq = filters.query ? `news_desk:("${filters.query}")` : "";
+        params.fq = "";
+
+        if (filters.query) {
+          params.fq += `news_desk:("${filters.query}")`;
+          params.q = filters.query;
+        }
+
+        if (filters.author) {
+          params.fq += params.fq
+            ? ` AND byline:("${filters.author}")`
+            : `byline:("${filters.author}")`;
+        }
+
+        if (filters.category && filters.category !== CategoryEnum.ALL) {
+          params.fq += params.fq
+            ? ` AND section_name:(${filters.category})`
+            : `section_name:(${filters.category})`;
+        }
+
+        // Add pagination
         params.page = (filters.page || 1) - 1;
 
-        if (filters.category && filters.category !== CategoryEnum.ALL)
-          params.fq += ` AND section_name:(${filters.category})`;
-        if (filters.author) params.fq += ` AND byline:("${filters.author}")`;
-        if (filters.fromDate) params.begin_date = filters.fromDate;
+        if (filters.fromDate) {
+          params.begin_date = filters.fromDate;
+        }
         break;
-
       default:
         throw new Error(`Unsupported source: ${source}`);
     }

@@ -10,6 +10,7 @@ import {
   useSearch,
 } from "../../../../components";
 import {
+  ArticlesSourcesEnum,
   ArticlesSourceString,
   CategoryType,
   getAllCategories,
@@ -99,13 +100,18 @@ export default function SearchBar() {
           </label>
           <div className="relative w-full">
             <Input
+              disabled={state.source === "guardian"}
               id="author"
               type="text"
               value={state.author}
               onChange={(e) =>
                 dispatch({ type: "SET_AUTHOR", payload: e.target.value })
               }
-              placeholder="Search by author..."
+              placeholder={
+                state.source === "guardian"
+                  ? "Search by author isn't availble"
+                  : "Search by author..."
+              }
               className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-lg rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-indigo-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md"
             />
             <Search
@@ -161,23 +167,27 @@ export default function SearchBar() {
               <SelectValue placeholder="Select Source" />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg">
-              <SelectItem value="newsapi">NewsAPI</SelectItem>
-              <SelectItem value="guardian">The Guardian</SelectItem>
-              <SelectItem value="newyorktimes">NY Times</SelectItem>
+              <SelectItem value={ArticlesSourcesEnum.NEWYORKTIMES}>
+                NY Times
+              </SelectItem>
+              <SelectItem value={ArticlesSourcesEnum.GUARDIAN}>
+                The Guardian
+              </SelectItem>
+              <SelectItem value={ArticlesSourcesEnum.NEWSAPI}>
+                NewsAPI
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
-
-        {/* Search Button */}
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <div className="w-full">
           <Button
-            variant="secondary"
-            type="submit"
-            className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-lg font-semibold bg-blue-600 dark:bg-indigo-500 text-white rounded-lg sm:rounded-xl shadow-md transition-all hover:bg-blue-700 dark:hover:bg-indigo-400 hover:shadow-lg"
+            onClick={() => dispatch({ type: "RESET_ALL" })}
+            className="w-full"
+            variant="outline"
           >
-            Search
+            Reset
           </Button>
-        </motion.div>
+        </div>
       </form>
     </motion.div>
   );

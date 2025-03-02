@@ -2,6 +2,11 @@ import { CategoryType } from "./categories.types";
 
 // types.ts
 export type ArticlesSourceString = "newsapi" | "guardian" | "newyorktimes";
+export enum ArticlesSourcesEnum {
+  NEWSAPI = "newsapi",
+  GUARDIAN = "guardian",
+  NEWYORKTIMES = "newyorktimes",
+}
 
 export type ArticleFilters = {
   category?: CategoryType;

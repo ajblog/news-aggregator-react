@@ -24,7 +24,7 @@ export const initialState: SearchState = {
   category: CategoryEnum.ALL,
   author: "",
   fromDate: "",
-  source: "newsapi",
+  source: "newyorktimes",
   page: 1,
 };
 
