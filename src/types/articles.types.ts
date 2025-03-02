@@ -1,10 +1,15 @@
+import { CategoryType } from "./categories.types";
+
+// types.ts
 export type ArticlesSourceString = "newsapi" | "guardian" | "newyorktimes";
+
 export type ArticleFilters = {
-  category?: string;
+  category?: CategoryType;
   author?: string;
   query?: string;
   page?: number;
   pageSize?: number;
+  fromDate?: string; // Added from date filter
 };
 
 export type NormalizedArticlesResponse = {

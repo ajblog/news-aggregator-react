@@ -1,46 +1,49 @@
-import { useEffect, useState } from "react";
+// src/pages/Home.tsx
+import { useEffect } from "react";
 import { useArticles } from "../../hooks";
-import { Layout, Pagination } from "../../components";
+import { Layout, Pagination, useSearch } from "../../components";
 import SearchBar from "./components/SearchBar/SearchBar";
 import NewsList from "./components/NewsList/NewsList";
-import { ArticlesSourceString } from "../../types";
 import { useDebounce } from "../../hooks/useDebounce";
 
 export function Home() {
-  const [source, setSource] = useState<ArticlesSourceString>("newsapi");
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState<number>(1);
+  const { state: searchState, dispatch } = useSearch();
 
-  const debouncedQuery = useDebounce(query, 500);
+  // Create debounced filters
+  const debouncedFilters = useDebounce(
+    {
+      query: searchState.query,
+      category: searchState.category,
+      author: searchState.author,
+      fromDate: searchState.fromDate,
+      page: searchState.page,
+      pageSize: 10,
+    },
+    500
+  );
 
-  const { data, error, isLoading } = useArticles(source, {
-    query: debouncedQuery,
-    page,
-    pageSize: 10,
-  });
+  const { data, error, isLoading } = useArticles(
+    searchState.source,
+    debouncedFilters
+  );
 
   useEffect(() => {
-    setPage(1);
-  }, [source]);
+    dispatch({ type: "SET_PAGE", payload: 1 });
+  }, [searchState.source]);
 
   return (
     <Layout>
       <div className="max-w-3xl mx-auto p-2 md:p-4 xl:p-6">
-        <div className="my-6">
-          <SearchBar
-            query={query}
-            setQuery={setQuery}
-            source={source}
-            setSource={setSource}
-          />
-        </div>
+        <SearchBar />
 
         {error && (
           <p className="text-center text-red-500 dark:text-red-400">
             Error fetching articles.
           </p>
         )}
+
         <NewsList loading={isLoading} articles={data?.articles!} />
+
         {!isLoading && !data?.articles.length && (
           <p className="text-center text-gray-500 dark:text-gray-400 mt-4">
             No articles found.
@@ -49,8 +52,8 @@ export function Home() {
 
         {data?.totalPages ? (
           <Pagination
-            page={page}
-            setPage={setPage}
+            page={searchState.page}
+            setPage={(page) => dispatch({ type: "SET_PAGE", payload: page })}
             totalPages={data.totalPages}
           />
         ) : null}

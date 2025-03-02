@@ -1,6 +1,11 @@
+// fetchArticles.ts
 import axios from "axios";
 import { API_BASE_URLS } from "../../constants";
-import { NormalizedArticlesResponse } from "../../types";
+import {
+  ArticleFilters,
+  CategoryEnum,
+  NormalizedArticlesResponse,
+} from "../../types";
 
 const API_KEYS: Record<string, string> = {
   newsapi: import.meta.env.VITE_NEWSAPI_KEY,
@@ -8,7 +13,7 @@ const API_KEYS: Record<string, string> = {
   newyorktimes: import.meta.env.VITE_NEWYORKTIMES_KEY,
 };
 
-const PAGE_SIZE = 10; // Default 10 items per page
+const PAGE_SIZE = 10;
 
 const apiClient = axios.create({
   timeout: 10000,
@@ -17,7 +22,7 @@ const apiClient = axios.create({
 
 export const fetchArticles = async (
   source: "newsapi" | "guardian" | "newyorktimes",
-  filters: { query?: string; category?: string; page?: number }
+  filters: ArticleFilters
 ): Promise<NormalizedArticlesResponse> => {
   try {
     const baseUrl = API_BASE_URLS[source];
@@ -37,19 +42,34 @@ export const fetchArticles = async (
         endpoint = "/everything";
         params.apiKey = apiKey;
         params.q = filters.query || "news";
+
+        if (filters.category && filters.category !== CategoryEnum.ALL)
+          params.categories = filters.category;
+        if (filters.author) params.authors = filters.author;
+        if (filters.fromDate) params.from = filters.fromDate;
         break;
 
       case "guardian":
         endpoint = "/search";
         params["api-key"] = apiKey;
         params.pageSize = PAGE_SIZE;
+
+        if (filters.category && filters.category !== CategoryEnum.ALL)
+          params.section = filters.category;
+        if (filters.author) params.contributor = filters.author;
+        if (filters.fromDate) params.fromDate = filters.fromDate;
         break;
 
       case "newyorktimes":
         endpoint = "/search/v2/articlesearch.json";
         params["api-key"] = apiKey;
         params.fq = filters.query ? `news_desk:("${filters.query}")` : "";
-        params.page = (filters.page || 1) - 1; // NYT uses 0-based page index
+        params.page = (filters.page || 1) - 1;
+
+        if (filters.category && filters.category !== CategoryEnum.ALL)
+          params.fq += ` AND section_name:(${filters.category})`;
+        if (filters.author) params.fq += ` AND byline:("${filters.author}")`;
+        if (filters.fromDate) params.begin_date = filters.fromDate;
         break;
 
       default:
@@ -63,7 +83,7 @@ export const fetchArticles = async (
       case "newsapi":
         return {
           articles: response.data.articles.map((article: any) => ({
-            id: article.url, // Using URL as a unique ID
+            id: article.url,
             title: article.title,
             description: article.description || "No description available",
             url: article.url,
@@ -79,9 +99,9 @@ export const fetchArticles = async (
           articles: response.data.response.results.map((article: any) => ({
             id: article.id,
             title: article.webTitle,
-            description: "No description available", // The Guardian API does not provide a description
+            description: "No description available",
             url: article.webUrl,
-            imageUrl: undefined, // Guardian API requires a separate call for images
+            imageUrl: undefined,
             source: "The Guardian",
             publishedAt: article.webPublicationDate,
           })),
