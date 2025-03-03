@@ -71,7 +71,66 @@ The main point of using a User management system has been to implement Preferenc
 - Manages user-specific settings
 - Persists data locally using IndexedDB
 
-## Development Setup
+## Deployment
+
+### Docker Configuration
+
+The application provides two Docker configurations for different environments:
+
+1. **Development Environment**
+
+   - Uses Vite's development server
+   - Hot module replacement enabled
+   - Source maps included
+   - Optimized for development workflow
+
+2. **Production Environment**
+   - Optimized builds with Vite
+   - Nginx for serving static assets
+   - Production-ready configuration
+
+### Running Docker Containers
+
+To run the containers, use the following commands:
+
+#### Development Environment
+
+```bash
+# Build development image
+docker build -f ./Dockerfile.dev -t ${container-name}:${container-version} .
+
+# Run development container
+docker run -p ${PORT}:5173 --rm ${container-name}:${container-version}
+```
+
+#### Production Environment
+
+```bash
+# Build production image
+docker build -f ./Dockerfile.prod -t ${container-name}:${container-version} .
+
+# Run production container
+docker run -p ${PORT}:80 --rm ${container-name}:${container-version}
+```
+
+Replace `PORT` and `container-name` and `container-version` and with your desired port number. The container will be automatically removed when stopped due to the `--rm` flag.
+
+### Port Mapping Explanation
+
+- **Development**: Maps host port `${PORT}` to container port `5173` (Vite's default development port)
+- **Production**: Maps host port `${PORT}` to container port `80` (Nginx default port)
+- The `--rm` flag ensures containers are cleaned up after stopping
+- The `-p` flag enables port mapping between host and container
+
+### Dockerfile Structure
+
+The Dockerfiles are organized as follows:
+
+```plaintext
+Dockerfile.dev
+Dockerfile.prod
+news-aggregator.nginx.conf  # Production Nginx configuration
+```
 
 ### Environment Configuration
 
