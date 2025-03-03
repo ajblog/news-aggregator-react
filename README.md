@@ -16,6 +16,7 @@ This project demonstrates a client-side news aggregation system with mocked auth
 - **Styling**: Tailwind CSS + ShadCN UI components
 - **API Client**: Axios + React Query
 - **Local Storage**: IndexedDB
+- **Package Manager**: pnpm (Performance-optimized npm)
 
 ### Project Structure
 
@@ -32,7 +33,6 @@ src/
 ├── pages/           # Different pages that are consumed by the router
 ├── types/           # Reused types
 └── utils/           # Utility functions
-
 ```
 
 ## Key Features
@@ -53,15 +53,16 @@ The authentication system uses IndexedDB for storage, which is suitable for prot
 
 1. Security Risks:
 
-   - Credentials stored client-side
-   - Vulnerable to XSS attacks
-   - No session management
+- Credentials stored client-side
+- Vulnerable to XSS attacks
+- No session management
 
 2. Limitations:
-   - Data persistence issues
-   - No multi-device sync
-   - Limited scalability
-   - No proper audit logging
+
+- Data persistence issues
+- No multi-device sync
+- Limited scalability
+- No proper audit logging
 
 ### User Preferences
 
@@ -71,6 +72,49 @@ The main point of using a User management system has been to implement Preferenc
 - Manages user-specific settings
 - Persists data locally using IndexedDB
 
+## Package Management
+
+### pnpm Implementation
+
+pnpm was chosen as the package manager for this project due to its significant advantages over traditional npm/yarn:
+
+1. **Space Efficiency**
+
+- Uses hard links to avoid duplicating dependencies
+- Significantly reduces disk space usage
+- Ideal for monorepos and large projects
+
+2. **Performance Benefits**
+
+- Faster installation times compared to npm/yarn
+- Efficient dependency resolution
+- Optimized package linking
+
+3. **Security Features**
+
+- Built-in security audits
+- Automatic dependency updates
+- Strict package resolution
+
+4. **Development Workflow**
+
+- Supports all npm scripts
+- Compatible with most build tools
+- Easy migration from npm/yarn
+
+The project uses pnpm for all package management operations:
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm run dev
+
+# Build for production
+pnpm run build
+```
+
 ## Deployment
 
 ### Docker Configuration
@@ -79,15 +123,16 @@ The application provides two Docker configurations for different environments:
 
 1. **Development Environment**
 
-   - Uses Vite's development server
-   - Hot module replacement enabled
-   - Source maps included
-   - Optimized for development workflow
+- Uses Vite's development server
+- Hot module replacement enabled
+- Source maps included
+- Optimized for development workflow
 
 2. **Production Environment**
-   - Optimized builds with Vite
-   - Nginx for serving static assets
-   - Production-ready configuration
+
+- Optimized builds with Vite
+- Nginx for serving static assets
+- Production-ready configuration
 
 ### Running Docker Containers
 
@@ -98,7 +143,6 @@ To run the containers, use the following commands:
 ```bash
 # Build development image
 docker build -f ./Dockerfile.dev -t ${container-name}:${container-version} .
-
 # Run development container
 docker run -p ${PORT}:5173 --rm ${container-name}:${container-version}
 ```
@@ -108,12 +152,11 @@ docker run -p ${PORT}:5173 --rm ${container-name}:${container-version}
 ```bash
 # Build production image
 docker build -f ./Dockerfile.prod -t ${container-name}:${container-version} .
-
 # Run production container
 docker run -p ${PORT}:80 --rm ${container-name}:${container-version}
 ```
 
-Replace `PORT` and `container-name` and `container-version` and with your desired port number. The container will be automatically removed when stopped due to the `--rm` flag.
+Replace `PORT` and `container-name` and `container-version` with your desired values. The container will be automatically removed when stopped due to the `--rm` flag.
 
 ### Port Mapping Explanation
 
@@ -132,10 +175,9 @@ Dockerfile.prod
 news-aggregator.nginx.conf  # Production Nginx configuration
 ```
 
-### Environment Configuration
+## Environment Configuration
 
 Create environment files in the root directory:
-
 **`.env.development`**
 
 ```makefile
@@ -152,19 +194,6 @@ VITE_GUARDIAN_API_KEY=your_production_guardian_key
 VITE_NEWSAPI_KEY=your_production_newsapi_key
 ```
 
-### Running the Application
-
-```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm run dev
-
-# Build for production
-pnpm run build
-```
-
 ## Testing Strategy
 
 The project currently includes unit tests for core components. Due to time constraints, integration tests were not implemented. Future improvements should include:
@@ -174,46 +203,36 @@ The project currently includes unit tests for core components. Due to time const
 3. State Management Tests
 4. End-to-End Testing
 
-## Deployment
-
-### Docker Configuration
-
-Two separate Dockerfiles are provided:
-
-1. **Dockerfile.dev** - Development environment
-2. **Dockerfile.prod** - Production environment
-
-Production setup includes Nginx configuration for optimal serving of static assets.
-
 ## Best Practices Implemented
 
 1. **Environment Separation**
 
-   - Separate API keys for development and production
-   - Secure handling of sensitive data
+- Separate API keys for development and production
+- Secure handling of sensitive data
 
 2. **Modular Architecture**
 
-   - Component-based structure
-   - Clear separation of concerns
-   - Reusable UI components
+- Component-based structure
+- Clear separation of concerns
+- Reusable UI components
 
 3. **State Management**
 
-   - Context API used judiciously
-   - Scoped to necessary features
-   - Avoids prop drilling
+- Context API used judiciously
+- Scoped to necessary features
+- Avoids prop drilling
 
 4. **Performance Optimization**
 
-   - React Query for API caching
-   - Efficient re-renders
-   - Optimized asset loading
+- React Query for API caching
+- Efficient re-renders
+- Optimized asset loading
 
 5. **Type Safety**
-   - Full TypeScript implementation
-   - Proper interface definitions
-   - Runtime type checking
+
+- Full TypeScript implementation
+- Proper interface definitions
+- Runtime type checking
 
 ## Future Improvements
 
