@@ -1,3 +1,4 @@
+import { DB_VERSION } from "../../constants";
 import { Preference } from "../../types";
 
 // preferences.ts
@@ -7,7 +8,7 @@ export class PreferenceService {
     preferences: Partial<Preference>
   ): Promise<boolean> {
     return new Promise((resolve) => {
-      const request = indexedDB.open("newsApp", 1);
+      const request = indexedDB.open("newsApp", DB_VERSION);
 
       request.onsuccess = () => {
         const db = request.result;
@@ -38,7 +39,7 @@ export class PreferenceService {
     userId: string
   ): Promise<Preference | null> {
     return new Promise((resolve) => {
-      const request = indexedDB.open("newsApp", 1);
+      const request = indexedDB.open("newsApp", DB_VERSION);
 
       request.onsuccess = () => {
         const db = request.result;

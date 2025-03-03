@@ -1,4 +1,3 @@
-// fetchArticles.ts
 import axios from "axios";
 import { API_BASE_URLS } from "../../constants";
 import {
@@ -41,25 +40,24 @@ export const fetchArticles = async (
       case "newsapi":
         endpoint = "/everything";
         params.apiKey = apiKey;
-
-        // Set up base query
-        params.q = filters.query || "news";
-
-        // Handle dates
-        if (filters.fromDate) {
-          params.from = filters.fromDate; // Format must be YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
-        }
-
-        // Handle authors
+        if (!filters.query) params.q = "news";
+        // Include authors if available
         if (filters.author) {
-          params.q += ` AND author:${filters.author}`; // Add author filter to main query
+          params.q += ` AND (${filters.author
+            .split(",")
+            .map((a) => `author:${a}`)
+            .join(" OR ")})`;
         }
 
-        // Handle categories
+        // Include all categories if available
         if (filters.category && filters.category !== CategoryEnum.ALL) {
-          params.q += ` AND ${filters.category}`; // Add category filter to main query
+          params.q += ` AND (${filters.category.split(",").join(" OR ")})`;
         }
 
+        // Handle date filtering
+        if (filters.fromDate) {
+          params.from = filters.fromDate;
+        }
         break;
 
       case "guardian":
@@ -67,22 +65,18 @@ export const fetchArticles = async (
         params["api-key"] = apiKey;
         params.pageSize = PAGE_SIZE;
 
-        // Handle date filtering
-        if (filters.fromDate) {
-          params["from-date"] = filters.fromDate; // Changed from 'fromDate' to 'from-date'
-          // Guardian API expects date in YYYY-MM-DD format
-          if (!/^\d{4}-\d{2}-\d{2}$/.test(filters.fromDate)) {
-            throw new Error("Guardian API date must be in YYYY-MM-DD format");
-          }
+        // Handle category filtering
+        if (filters.category && filters.category !== CategoryEnum.ALL) {
+          const categories = filters.category.split(",");
+          const randomCategory =
+            categories[Math.floor(Math.random() * categories.length)];
+
+          params.section = randomCategory;
         }
 
-        // Handle category filtering
-        if (
-          filters.category &&
-          filters.category !== CategoryEnum.ALL &&
-          !filters.author
-        ) {
-          params.section = filters.category;
+        // Handle date filtering
+        if (filters.fromDate) {
+          params["from-date"] = filters.fromDate;
         }
         break;
 
@@ -90,36 +84,40 @@ export const fetchArticles = async (
         endpoint = "/search/v2/articlesearch.json";
         params["api-key"] = apiKey;
 
-        if (filters.query) {
-          params.q = filters.query;
-        }
+        let fq = [];
 
-        // Initialize fq only if we have filters
-        let fq = "";
-
+        // Include authors
         if (filters.author) {
-          fq += `byline:("${filters.author}")`;
+          fq.push(
+            `byline:(${filters.author
+              .split(",")
+              .map((a) => `"${a}"`)
+              .join(" OR ")})`
+          );
         }
 
+        // Include categories
         if (filters.category && filters.category !== CategoryEnum.ALL) {
-          if (fq) {
-            fq += ` AND `;
-          }
-          fq += `section_name:(${filters.category})`;
+          fq.push(
+            `section_name:(${filters.category
+              .split(",")
+              .map((c) => `"${c}"`)
+              .join(" OR ")})`
+          );
         }
 
-        // Only add fq to params if it's not empty
-        if (fq) {
-          params.fq = fq;
+        // Add filtering queries if present
+        if (fq.length) {
+          params.fq = fq.join(" AND ");
         }
-
-        // Add pagination
-        params.page = (filters.page || 1) - 1;
 
         if (filters.fromDate) {
           params.begin_date = filters.fromDate;
         }
+
+        params.page = (filters.page || 1) - 1;
         break;
+
       default:
         throw new Error(`Unsupported source: ${source}`);
     }

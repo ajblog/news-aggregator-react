@@ -1,10 +1,12 @@
 // src/hooks/useAuth.ts
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../services";
-import { useAuth } from "../components";
+import { useAuth, useToast } from "../components";
 
 export const useAuthFlow = () => {
   const { setCurrentUser } = useAuth();
+  const { toast } = useToast();
+
   const navigate = useNavigate();
 
   const handleLogin = async (username: string, password: string) => {
@@ -17,6 +19,11 @@ export const useAuthFlow = () => {
       }
     } catch (error) {
       console.error("Login failed:", error);
+      toast({
+        title: "Error",
+        description: "Login failed, Either password or username is wrong...",
+        variant: "destructive",
+      });
     }
   };
 
@@ -29,6 +36,11 @@ export const useAuthFlow = () => {
       }
     } catch (error) {
       console.error("Registration failed:", error);
+      toast({
+        title: "Error",
+        description: "Registration failed, Try again with different inputs...",
+        variant: "destructive",
+      });
     }
   };
 

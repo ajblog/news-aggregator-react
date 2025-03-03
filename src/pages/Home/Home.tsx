@@ -1,14 +1,14 @@
-// src/pages/Home.tsx
 import { useEffect } from "react";
 import { useArticles } from "../../hooks";
-import { Layout, Pagination, useSearch } from "../../components";
+import { Layout, Pagination, useAuth, useSearch } from "../../components";
 import SearchBar from "./components/SearchBar/SearchBar";
 import NewsList from "./components/NewsList/NewsList";
 import { useDebounce } from "../../hooks/useDebounce";
+import { useArticlesWithPreferences } from "../../hooks/useArticleWithPreference";
 
 export function Home() {
   const { state: searchState, dispatch } = useSearch();
-
+  const { currentUser } = useAuth();
   // Create debounced filters
   const debouncedFilters = useDebounce(
     {
@@ -22,10 +22,9 @@ export function Home() {
     500
   );
 
-  const { data, error, isLoading } = useArticles(
-    searchState.source,
-    debouncedFilters
-  );
+  const { data, error, isLoading } = searchState.usePreferences
+    ? useArticlesWithPreferences(searchState.source, currentUser?.id!)
+    : useArticles(searchState.source, debouncedFilters);
 
   useEffect(() => {
     dispatch({ type: "SET_PAGE", payload: 1 });
@@ -37,17 +36,13 @@ export function Home() {
         <SearchBar />
 
         {error && (
-          <p className="text-center text-red-500 dark:text-red-400">
-            Error fetching articles.
-          </p>
+          <p className="text-center text-red-500">Error fetching articles.</p>
         )}
 
-        <NewsList loading={isLoading} articles={data?.articles!} />
+        <NewsList loading={isLoading} articles={data?.articles ?? []} />
 
-        {!isLoading && !data?.articles.length && (
-          <p className="text-center text-gray-500 dark:text-gray-400 mt-4">
-            No articles found.
-          </p>
+        {!isLoading && !data?.articles?.length && (
+          <p className="text-center text-gray-500 mt-4">No articles found.</p>
         )}
 
         {data?.totalPages ? (

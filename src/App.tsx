@@ -34,11 +34,18 @@ export default () => {
                 </SearchProvider>
               }
             />
-            <Route path="/preferences" element={<PreferencesPage />} />
+            <Route
+              path="/preferences"
+              element={
+                <ProtectedRoute forUsers={true}>
+                  <PreferencesPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/signin"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute forUsers={false}>
                   <SignInPage />
                 </ProtectedRoute>
               }
@@ -46,7 +53,7 @@ export default () => {
             <Route
               path="/signup"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute forUsers={false}>
                   <SignUpPage />
                 </ProtectedRoute>
               }

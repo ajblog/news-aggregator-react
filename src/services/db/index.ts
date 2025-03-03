@@ -1,6 +1,8 @@
+import { DB_VERSION } from "../../constants";
+
 export const initDB = (): Promise<boolean> => {
   return new Promise((resolve) => {
-    const request = indexedDB.open("newsApp", 1);
+    const request = indexedDB.open("newsApp", DB_VERSION);
 
     request.onupgradeneeded = () => {
       const db = request.result;

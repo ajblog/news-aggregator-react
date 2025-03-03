@@ -8,6 +8,7 @@ export interface SearchState {
   fromDate: string;
   source: ArticlesSourceString;
   page: number;
+  usePreferences: boolean;
 }
 
 export type SearchAction =
@@ -17,6 +18,7 @@ export type SearchAction =
   | { type: "SET_FROM_DATE"; payload: string }
   | { type: "SET_SOURCE"; payload: ArticlesSourceString }
   | { type: "SET_PAGE"; payload: number }
+  | { type: "SET_USE_PREFERENCES"; payload: boolean }
   | { type: "RESET_ALL" };
 
 export const initialState: SearchState = {
@@ -25,6 +27,7 @@ export const initialState: SearchState = {
   author: "",
   fromDate: "",
   source: "newyorktimes",
+  usePreferences: false,
   page: 1,
 };
 
@@ -45,6 +48,8 @@ export function searchReducer(
       return { ...state, source: action.payload, page: 1 };
     case "SET_PAGE":
       return { ...state, page: action.payload };
+    case "SET_USE_PREFERENCES":
+      return { ...state, usePreferences: action.payload };
     case "RESET_ALL":
       return initialState;
     default:

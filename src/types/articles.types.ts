@@ -9,7 +9,7 @@ export enum ArticlesSourcesEnum {
 }
 
 export type ArticleFilters = {
-  category?: CategoryType;
+  category?: CategoryType | string;
   author?: string;
   query?: string;
   page?: number;

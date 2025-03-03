@@ -26,9 +26,9 @@ export function Header() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="w-full border-b bg-white dark:bg-gray-800"
+      className="w-full border-b bg-white dark:bg-gray-800 flex content-between items-center  px-4"
     >
-      <div className="container mx-auto px-4 py-3 md:py-4">
+      <div className="container mx-auto py-3 md:py-4">
         <NavigationMenu className="w-full">
           <NavigationMenuList className="flex items-center justify-between w-full">
             <motion.div
@@ -99,7 +99,6 @@ export function Header() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3, ease: "easeOut", delay: 0.3 }}
-        className="absolute top-1 md:top-2 right-4"
       >
         <ToggleTheme />
       </motion.div>
