@@ -10,12 +10,12 @@ import {
   Button,
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "../../ui";
 import { ToggleTheme } from "../../widgets";
 import { useAuthFlow } from "../../../hooks";
 import { useAuth } from "../../wrappers";
+import { Link } from "react-router-dom";
 
 export function Header() {
   const { currentUser } = useAuth();
@@ -38,24 +38,24 @@ export function Header() {
               className="flex items-center gap-4 md:gap-8"
             >
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  href="/"
+                <Link
+                  to="/"
                   className="flex items-center gap-2 text-sm md:text-base"
                 >
                   <LayoutDashboardIcon className="h-3 w-3 md:h-4 md:w-4" />
                   Home
-                </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
               {currentUser && (
                 <>
                   <NavigationMenuItem>
-                    <NavigationMenuLink
-                      href="/preferences"
+                    <Link
+                      to="/preferences"
                       className="flex items-center gap-2 text-sm md:text-base"
                     >
                       <Settings className="h-3 w-3 md:h-4 md:w-4" />
                       Preferences
-                    </NavigationMenuLink>
+                    </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
                     <Button
@@ -72,22 +72,22 @@ export function Header() {
               {!currentUser && (
                 <>
                   <NavigationMenuItem>
-                    <NavigationMenuLink
-                      href="/signin"
+                    <Link
+                      to="/signin"
                       className="flex items-center gap-2 text-sm md:text-base"
                     >
                       <LogInIcon className="h-3 w-3 md:h-4 md:w-4" />
                       Sign In
-                    </NavigationMenuLink>
+                    </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <NavigationMenuLink
-                      href="/signup"
+                    <Link
+                      to="/signup"
                       className="flex items-center gap-2 text-sm md:text-base"
                     >
                       <User className="h-3 w-3 md:h-4 md:w-4" />
                       Sign Up
-                    </NavigationMenuLink>
+                    </Link>
                   </NavigationMenuItem>
                 </>
               )}
