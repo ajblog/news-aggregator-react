@@ -34,7 +34,8 @@ export const useAuthFlow = () => {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    navigate("/signin");
+    navigate("/");
+    localStorage.removeItem("currentUser");
   };
 
   return { handleLogin, handleRegister, handleLogout };
