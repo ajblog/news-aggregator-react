@@ -7,3 +7,8 @@ export * from "./Label/Label";
 export * from "./Card/Card";
 export * from "./Form/Form";
 export * from "./Navigation/Navigation";
+export * from "./Badge/Badge";
+export * from "./Popover/Popover";
+export * from "./Dialog/Dialog";
+export * from "./Command/Command";
+export * from "./Toast";

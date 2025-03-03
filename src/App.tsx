@@ -1,10 +1,15 @@
 // src/router/index.tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { AuthProvider, ProtectedRoute, SearchProvider } from "./components";
+import {
+  AuthProvider,
+  ProtectedRoute,
+  SearchProvider,
+  Toaster,
+} from "./components";
 import { useEffect } from "react";
 import { initDB } from "./services";
-import { Home, SignInPage, SignUpPage } from "./pages";
+import { Home, PreferencesPage, SignInPage, SignUpPage } from "./pages";
 
 export default () => {
   useEffect(() => {
@@ -18,34 +23,37 @@ export default () => {
   }, []);
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <SearchProvider>
-                <Home />
-              </SearchProvider>
-            }
-          />
-          <Route
-            path="/signin"
-            element={
-              <ProtectedRoute>
-                <SignInPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <ProtectedRoute>
-                <SignUpPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <Toaster>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <SearchProvider>
+                  <Home />
+                </SearchProvider>
+              }
+            />
+            <Route path="/preferences" element={<PreferencesPage />} />
+            <Route
+              path="/signin"
+              element={
+                <ProtectedRoute>
+                  <SignInPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <ProtectedRoute>
+                  <SignUpPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </Toaster>
     </AuthProvider>
   );
 };
