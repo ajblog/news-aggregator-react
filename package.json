@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "dev": "vite --mode development",
+    "build": "tsc -b && vite build --mode production",
     "preview": "vite preview",
+    "lint": "eslint .",
     "test": "vitest",
     "test:watch": "vitest --watch"
   },
